@@ -1,0 +1,36 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+input CreateAccountInput {
+  confirmPassword: String!
+  email: String!
+  name: String!
+  password: String!
+}
+
+type CreateAccountOutput {
+  error: String
+  ok: Boolean!
+  userId: Int
+}
+
+input LoginIntput {
+  email: String!
+  password: String!
+}
+
+type LoginOutput {
+  error: String
+  ok: Boolean!
+  token: String
+}
+
+type Mutation {
+  createAccount(input: CreateAccountInput!): CreateAccountOutput!
+  login(input: LoginIntput!): LoginOutput!
+}
+
+type Query {
+  me: Boolean!
+}
