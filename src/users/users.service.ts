@@ -8,6 +8,7 @@ import {
 } from './dtos/create-account.dto';
 import { EditProfileInput, EditProfileOutput } from './dtos/edit-profile.dto';
 import { LoginIntput, LoginOutput } from './dtos/login-dto';
+import { UserProfileInput, UserProfileOutput } from './dtos/user-profile.dto';
 import { User } from './entities/users.entity';
 
 @Injectable()
@@ -94,5 +95,26 @@ export class UsersService {
     return {
       ok: true,
     };
+  }
+  async findById({ userId }: UserProfileInput): Promise<UserProfileOutput> {
+    try {
+      const user = await this.userRepository.findOneOrFail(userId);
+      if (!user) {
+        return {
+          ok: false,
+          error: 'Cannot find the user.',
+        };
+      }
+      return {
+        ok: true,
+        user,
+      };
+    } catch (error) {
+      console.log(error);
+      return {
+        ok: false,
+        error: 'Cannot find the user.',
+      };
+    }
   }
 }

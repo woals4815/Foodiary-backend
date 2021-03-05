@@ -15,6 +15,23 @@ type CreateAccountOutput {
   userId: Int
 }
 
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+input EditProfileInput {
+  confirmPassword: String
+  email: String
+  name: String
+  password: String
+}
+
+type EditProfileOutput {
+  error: String
+  ok: Boolean!
+}
+
 input LoginIntput {
   email: String!
   password: String!
@@ -28,9 +45,25 @@ type LoginOutput {
 
 type Mutation {
   createAccount(input: CreateAccountInput!): CreateAccountOutput!
+  editProfile(input: EditProfileInput!): EditProfileOutput!
   login(input: LoginIntput!): LoginOutput!
 }
 
 type Query {
-  me: Boolean!
+  userProfile(userId: Float!): UserProfileOutput!
+}
+
+type User {
+  createdAt: DateTime!
+  email: String!
+  id: Int!
+  name: String!
+  password: String!
+  updatedAt: DateTime!
+}
+
+type UserProfileOutput {
+  error: String
+  ok: Boolean!
+  user: User
 }
