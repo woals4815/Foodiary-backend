@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { CommonOutput } from 'src/common/dtos/common.dto';
 import { JwtService } from 'src/jwt/jwt.service';
 import { Repository } from 'typeorm';
 import {
@@ -17,11 +18,27 @@ export class UsersService {
     @InjectRepository(User) private readonly userRepository: Repository<User>,
     private readonly jwtService: JwtService,
   ) {}
+  verifyPassword(password, confirmPassword): CommonOutput {
+    const passwordRegix = /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{10,20}$/;
+    if (password !== confirmPassword) {
+      return {
+        ok: false,
+        error: 'Please write same password.',
+      };
+    }
+    if (!passwordRegix.test(password)) {
+      return {
+        ok: false,
+        error:
+          'Password should contain one number and one special character at least.',
+      };
+    }
+    return { ok: true };
+  }
   async createAccount(
     createAccountInput: CreateAccountInput,
   ): Promise<CreateAccountOutput> {
     try {
-      const passwordRegix = /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{10,20}$/;
       const userExist = await this.userRepository.findOne({
         email: createAccountInput.email,
       });
@@ -31,18 +48,12 @@ export class UsersService {
           error: 'User already exists.',
         };
       }
-      if (createAccountInput.password !== createAccountInput.confirmPassword) {
-        return {
-          ok: false,
-          error: 'Please write the same password.',
-        };
-      }
-      if (!passwordRegix.test(createAccountInput.password)) {
-        return {
-          ok: false,
-          error:
-            'password should contain one number and one special character at least.',
-        };
+      const passwordConfirm = this.verifyPassword(
+        createAccountInput.password,
+        createAccountInput.confirmPassword,
+      );
+      if (!passwordConfirm.ok) {
+        return passwordConfirm;
       }
       const newUser = await this.userRepository.create(createAccountInput);
       await this.userRepository.save(newUser);
@@ -90,11 +101,41 @@ export class UsersService {
     }
   }
   async editProfile(
-    editProfileInput: EditProfileInput,
+    { email, name, password, confirmPassword }: EditProfileInput,
+    user: User,
   ): Promise<EditProfileOutput> {
-    return {
-      ok: true,
-    };
+    try {
+      const userExist = await this.userRepository.findOne(user.id);
+      if (!userExist) {
+        return {
+          ok: false,
+          error: 'User not exist.',
+        };
+      }
+      if (email) {
+        userExist.email = email;
+      }
+      if (password) {
+        const passwordConfirm = this.verifyPassword(password, confirmPassword);
+        if (!passwordConfirm.ok) {
+          return passwordConfirm;
+        }
+        userExist.password = password;
+      }
+      if (name) {
+        userExist.name = name;
+      }
+      await this.userRepository.save(userExist);
+      return {
+        ok: true,
+      };
+    } catch (error) {
+      console.log(error);
+      return {
+        ok: false,
+        error: 'Cannot edit you profile.',
+      };
+    }
   }
   async findById({ userId }: UserProfileInput): Promise<UserProfileOutput> {
     try {

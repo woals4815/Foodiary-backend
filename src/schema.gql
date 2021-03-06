@@ -15,10 +15,56 @@ type CreateAccountOutput {
   userId: Int
 }
 
+input CreateDiaryInput {
+  description: String
+  images: [String!]
+  publicOrNot: Boolean = false
+  rating: Float = 5
+}
+
+type CreateDiaryOutput {
+  diaryId: Float
+  error: String
+  ok: Boolean!
+}
+
 """
 A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
 """
 scalar DateTime
+
+input DeleteDiaryInput {
+  diaryId: Float!
+}
+
+type DeleteDiaryOutput {
+  error: String
+  ok: Boolean!
+}
+
+type Diary {
+  createdAt: DateTime!
+  creator: User!
+  description: String
+  id: Int!
+  images: [String!]
+  publicOrNot: Boolean!
+  rating: Float!
+  updatedAt: DateTime!
+}
+
+input EditDiaryInput {
+  description: String
+  diaryId: Float!
+  images: [String!]
+  publicOrNot: Boolean = false
+  rating: Float = 5
+}
+
+type EditDiaryOutput {
+  error: String
+  ok: Boolean!
+}
 
 input EditProfileInput {
   confirmPassword: String
@@ -29,6 +75,22 @@ input EditProfileInput {
 
 type EditProfileOutput {
   error: String
+  ok: Boolean!
+}
+
+type GetMyDiariesOutput {
+  error: String
+  myDiaries: [Diary!]
+  ok: Boolean!
+}
+
+input GetOneDiaryInput {
+  diaryId: Float!
+}
+
+type GetOneDiaryOutput {
+  error: String
+  myDiary: Diary
   ok: Boolean!
 }
 
@@ -45,18 +107,36 @@ type LoginOutput {
 
 type Mutation {
   createAccount(input: CreateAccountInput!): CreateAccountOutput!
+  createDiary(input: CreateDiaryInput!): CreateDiaryOutput!
+  deleteDiary(input: DeleteDiaryInput!): DeleteDiaryOutput!
+  editDiary(input: EditDiaryInput!): EditDiaryOutput!
   editProfile(input: EditProfileInput!): EditProfileOutput!
   login(input: LoginIntput!): LoginOutput!
 }
 
 type Query {
+  getAllDiaries: getAllDiariesOutput!
+  getAllRestaurants: getAllRestaurantsOutput!
+  getMyDiaries: GetMyDiariesOutput!
+  getMyOneDiary(input: GetOneDiaryInput!): GetOneDiaryOutput!
   userProfile(userId: Float!): UserProfileOutput!
+}
+
+type Restaurant {
+  average_price: Float!
+  createdAt: DateTime!
+  id: Int!
+  location: String!
+  name: String!
+  rating: Float!
+  updatedAt: DateTime!
 }
 
 type User {
   createdAt: DateTime!
   email: String!
   id: Int!
+  myDiaries: [Diary!]!
   name: String!
   password: String!
   updatedAt: DateTime!
@@ -66,4 +146,17 @@ type UserProfileOutput {
   error: String
   ok: Boolean!
   user: User
+}
+
+type getAllDiariesOutput {
+  diaries: [Diary!]
+  error: String
+  ok: Boolean!
+}
+
+type getAllRestaurantsOutput {
+  counts: Float
+  error: String
+  ok: Boolean!
+  restaurants: [Restaurant!]
 }

@@ -4,10 +4,9 @@ import {
   NestModule,
   RequestMethod,
 } from '@nestjs/common';
-// import { RestaurantsModule } from './restaurants/restaurants.module';
 import { UsersModule } from './users/users.module';
 // import { UploadModule } from './upload/upload.module';
-// import { DiariesModule } from './diaries/diaries.module';
+import { DiariesModule } from './diaries/diaries.module';
 import { GraphQLModule } from '@nestjs/graphql';
 import { join } from 'path';
 import { ConfigModule } from '@nestjs/config';
@@ -17,6 +16,11 @@ import { User } from './users/entities/users.entity';
 import { JwtModule } from './jwt/jwt.module';
 import { AuthModule } from './auth/auth.module';
 import { JwtMiddleware } from './jwt/jwt.middleware';
+import { RestaurantsModule } from './restaurants/restaurants.module';
+import { Restaurant } from './restaurants/entities/restaurants.entity';
+import * as Joi from 'joi';
+import { Diary } from './diaries/entities/diaries.entity';
+import { UploadsModule } from './uploads/uploads.module';
 
 @Module({
   imports: [
@@ -24,10 +28,25 @@ import { JwtMiddleware } from './jwt/jwt.middleware';
       isGlobal: true,
       envFilePath: process.env.NODE_ENV === 'dev' ? '.env.dev' : '.env.test',
       ignoreEnvFile: process.env.NODE_ENV === 'production',
+      validationSchema: Joi.object({
+        NODE_ENV: Joi.string().valid('dev', 'production', 'test').required(),
+        DB_HOST: Joi.string(),
+        DB_PORT: Joi.string(),
+        DB_USERNAME: Joi.string(),
+        DB_PASSWORD: Joi.string(),
+        DB_NAME: Joi.string(),
+        PRIVATE_KEY: Joi.string().required(),
+      }),
     }),
     GraphQLModule.forRoot({
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
       sortSchema: true,
+      context: ({ req, connection }) => {
+        const TOKEN_KEY = 'x-jwt';
+        return {
+          token: req ? req.headers[TOKEN_KEY] : connection.context[TOKEN_KEY],
+        };
+      },
     }),
     TypeOrmModule.forRoot({
       type: 'postgres',
@@ -40,17 +59,18 @@ import { JwtMiddleware } from './jwt/jwt.middleware';
       logging:
         process.env.NODE_ENV !== 'production' &&
         process.env.NODE_ENV !== 'test',
-      entities: [User],
+      entities: [User, Restaurant, Diary],
     }),
-    // RestaurantsModule,
+    RestaurantsModule,
     UsersModule,
     // UploadModule,
-    // DiariesModule,
+    DiariesModule,
     CommonModule,
     JwtModule.forRoot({
       privateKey: process.env.PRIVATE_KEY,
     }),
     AuthModule,
+    UploadsModule,
   ],
   controllers: [],
   providers: [],

@@ -1,9 +1,10 @@
 import { Field, InputType, ObjectType } from '@nestjs/graphql';
 import { IsEmail, IsString, MinLength } from 'class-validator';
 import { CommonEntity } from 'src/common/entities/common.entity';
-import { BeforeInsert, BeforeUpdate, Column, Entity } from 'typeorm';
+import { BeforeInsert, BeforeUpdate, Column, Entity, OneToMany } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { InternalServerErrorException } from '@nestjs/common';
+import { Diary } from 'src/diaries/entities/diaries.entity';
 
 @InputType('userInputType', { isAbstract: true })
 @ObjectType()
@@ -21,6 +22,9 @@ export class User extends CommonEntity {
   @Field((type) => String)
   @MinLength(10)
   password: string;
+  @OneToMany(() => Diary, (diary) => diary.creator)
+  @Field((type) => [Diary])
+  myDiaries: Diary[];
 
   @BeforeInsert()
   @BeforeUpdate()
