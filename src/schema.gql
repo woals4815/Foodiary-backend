@@ -2,6 +2,15 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type Comment {
+  comment: String!
+  createdAt: DateTime!
+  creator: User!
+  diary: String!
+  id: Int!
+  updatedAt: DateTime!
+}
+
 input CreateAccountInput {
   confirmPassword: String!
   email: String!
@@ -43,6 +52,7 @@ type DeleteDiaryOutput {
 }
 
 type Diary {
+  comments: [Comment!]
   createdAt: DateTime!
   creator: User!
   description: String
@@ -74,6 +84,16 @@ input EditProfileInput {
 }
 
 type EditProfileOutput {
+  error: String
+  ok: Boolean!
+}
+
+input GetAllCommentsInput {
+  diaryId: Float!
+}
+
+type GetAllCommentsOutput {
+  allComments: [Comment!]
   error: String
   ok: Boolean!
 }
@@ -115,10 +135,13 @@ type Mutation {
 }
 
 type Query {
+  getAllCommentsOfoneDiary(input: GetAllCommentsInput!): GetAllCommentsOutput!
   getAllDiaries: getAllDiariesOutput!
   getAllRestaurants: getAllRestaurantsOutput!
+  getMe: User!
   getMyDiaries: GetMyDiariesOutput!
   getMyOneDiary(input: GetOneDiaryInput!): GetOneDiaryOutput!
+  getOneDiary(input: GetOneDiaryInput!): GetOneDiaryOutput!
   userProfile(userId: Float!): UserProfileOutput!
 }
 
@@ -133,12 +156,14 @@ type Restaurant {
 }
 
 type User {
+  commentsMade: [Comment!]!
   createdAt: DateTime!
   email: String!
   id: Int!
   myDiaries: [Diary!]!
   name: String!
   password: String!
+  profilePic: String
   updatedAt: DateTime!
 }
 

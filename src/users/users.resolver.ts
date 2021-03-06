@@ -38,4 +38,9 @@ export class UsersResolver {
   ): Promise<UserProfileOutput> {
     return this.usersService.findById(userId);
   }
+  @Query((returns) => User)
+  @Role(['User'])
+  getMe(@AuthUser() user: User) {
+    return user;
+  }
 }

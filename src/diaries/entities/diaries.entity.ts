@@ -1,8 +1,9 @@
 import { Field, InputType, ObjectType } from '@nestjs/graphql';
-import { Max, Min } from 'class-validator';
+import { IsArray, Max, Min } from 'class-validator';
 import { CommonEntity } from 'src/common/entities/common.entity';
 import { User } from 'src/users/entities/users.entity';
-import { Column, Entity, ManyToOne, RelationId } from 'typeorm';
+import { Column, Entity, ManyToOne, OneToMany, RelationId } from 'typeorm';
+import { Comment } from './comment.entity';
 
 @InputType('diaryInputType', { isAbstract: true })
 @ObjectType()
@@ -27,4 +28,8 @@ export class Diary extends CommonEntity {
   creator: User;
   @RelationId((diary: Diary) => diary.creator)
   creatorId: number;
+  @OneToMany(() => Comment, (comment) => comment.diary, { nullable: true })
+  @Field((type) => [Comment], { nullable: true })
+  @IsArray()
+  comments?: Comment[];
 }

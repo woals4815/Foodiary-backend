@@ -7,7 +7,12 @@ import { DeleteDiaryInput, DeleteDiaryOutput } from './dtos/delete-diary.dto';
 import { EditDiaryInput, EditDiaryOutput } from './dtos/edit-diary.dto';
 import { getAllDiariesOutput } from './dtos/get-all-diaries.to';
 import { GetOneDiaryInput, GetOneDiaryOutput } from './dtos/get-one-diary.dto';
+import {
+  GetAllCommentsInput,
+  GetAllCommentsOutput,
+} from './dtos/getAllComments.dto';
 import { GetMyDiariesOutput } from './dtos/getMyDiaries.dto';
+import { Comment } from './entities/comment.entity';
 import { Diary } from './entities/diaries.entity';
 
 @Injectable()
@@ -15,6 +20,8 @@ export class DiariesService {
   constructor(
     @InjectRepository(Diary)
     private readonly diaryRepository: Repository<Diary>,
+    @InjectRepository(Comment)
+    private readonly commentRepository: Repository<Comment>,
   ) {}
   async getAllDiaries(): Promise<getAllDiariesOutput> {
     try {
@@ -165,6 +172,65 @@ export class DiariesService {
       return {
         ok: false,
         error: 'Cannot delete the diary.',
+      };
+    }
+  }
+  async getOneDiary({ diaryId }: GetOneDiaryInput): Promise<GetOneDiaryOutput> {
+    try {
+      const diary = await this.diaryRepository.findOne(
+        { id: diaryId },
+        { relations: ['comments'] },
+      );
+      if (!diary) {
+        return {
+          ok: false,
+          error: 'Cannot find the diary.',
+        };
+      }
+      if (!diary.publicOrNot) {
+        return {
+          ok: false,
+          error: 'You cannot access this diary.',
+        };
+      }
+      return {
+        ok: true,
+        myDiary: diary,
+      };
+    } catch (error) {
+      console.log(error);
+      return {
+        ok: false,
+        error: 'You cannot access this diary.',
+      };
+    }
+  }
+  async getAllCommentsOfoneDiary({
+    diaryId,
+  }: GetAllCommentsInput): Promise<GetAllCommentsOutput> {
+    try {
+      const { ok, error, myDiary: diary } = await this.getOneDiary({ diaryId });
+      if (!ok) {
+        return {
+          ok,
+          error,
+        };
+      }
+      if (diary.comments.length === 0) {
+        return {
+          ok: false,
+          error: 'There are no comments yet.',
+        };
+      }
+      return {
+        ok: true,
+        allComments: diary.comments,
+      };
+    } catch (error) {
+      console.log(error);
+      return {
+        ok: false,
+        error: 'Cannot get any comments.',
       };
     }
   }

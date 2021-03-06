@@ -8,7 +8,12 @@ import { DeleteDiaryInput, DeleteDiaryOutput } from './dtos/delete-diary.dto';
 import { EditDiaryInput, EditDiaryOutput } from './dtos/edit-diary.dto';
 import { getAllDiariesOutput } from './dtos/get-all-diaries.to';
 import { GetOneDiaryInput, GetOneDiaryOutput } from './dtos/get-one-diary.dto';
+import {
+  GetAllCommentsInput,
+  GetAllCommentsOutput,
+} from './dtos/getAllComments.dto';
 import { GetMyDiariesOutput } from './dtos/getMyDiaries.dto';
+import { Comment } from './entities/comment.entity';
 import { Diary } from './entities/diaries.entity';
 
 @Resolver((of) => Diary)
@@ -40,6 +45,13 @@ export class DiariesResolver {
   ): Promise<GetOneDiaryOutput> {
     return this.diariesService.getMyOneDiary(getOneDiaryInput, user);
   }
+  @Query((returns) => GetOneDiaryOutput)
+  @Role(['User'])
+  async getOneDiary(
+    @Args('input') { diaryId }: GetOneDiaryInput,
+  ): Promise<GetOneDiaryOutput> {
+    return this.diariesService.getOneDiary({ diaryId });
+  }
 
   @Mutation((returns) => EditDiaryOutput)
   @Role(['User'])
@@ -57,5 +69,18 @@ export class DiariesResolver {
     @AuthUser() user: User,
   ): Promise<DeleteDiaryOutput> {
     return this.diariesService.deleteDiary(deleteDiaryInput, user);
+  }
+}
+
+@Resolver((of) => Comment)
+export class CommentsResolver {
+  constructor(private readonly diariesService: DiariesService) {}
+
+  @Role(['User'])
+  @Query((returns) => GetAllCommentsOutput)
+  async getAllCommentsOfoneDiary(
+    @Args('input') { diaryId }: GetAllCommentsInput,
+  ): Promise<GetAllCommentsOutput> {
+    return this.diariesService.getAllCommentsOfoneDiary({ diaryId });
   }
 }

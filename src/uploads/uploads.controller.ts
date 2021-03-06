@@ -36,7 +36,6 @@ export class UploadsController {
         const url = `https://${BUCKET_NAME}.s3.amazonaws.com/${objectName}`;
         urls.push(url);
       });
-      console.log(urls);
       return urls;
     } catch (error) {
       console.log(error);

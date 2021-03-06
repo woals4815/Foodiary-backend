@@ -21,6 +21,7 @@ import { Restaurant } from './restaurants/entities/restaurants.entity';
 import * as Joi from 'joi';
 import { Diary } from './diaries/entities/diaries.entity';
 import { UploadsModule } from './uploads/uploads.module';
+import { Comment } from './diaries/entities/comment.entity';
 
 @Module({
   imports: [
@@ -59,7 +60,7 @@ import { UploadsModule } from './uploads/uploads.module';
       logging:
         process.env.NODE_ENV !== 'production' &&
         process.env.NODE_ENV !== 'test',
-      entities: [User, Restaurant, Diary],
+      entities: [User, Restaurant, Diary, Comment],
     }),
     RestaurantsModule,
     UsersModule,
