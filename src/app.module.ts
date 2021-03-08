@@ -5,7 +5,6 @@ import {
   RequestMethod,
 } from '@nestjs/common';
 import { UsersModule } from './users/users.module';
-// import { UploadModule } from './upload/upload.module';
 import { DiariesModule } from './diaries/diaries.module';
 import { GraphQLModule } from '@nestjs/graphql';
 import { join } from 'path';
@@ -64,7 +63,6 @@ import { Comment } from './diaries/entities/comment.entity';
     }),
     RestaurantsModule,
     UsersModule,
-    // UploadModule,
     DiariesModule,
     CommonModule,
     JwtModule.forRoot({

@@ -28,7 +28,9 @@ export class Diary extends CommonEntity {
   creator: User;
   @RelationId((diary: Diary) => diary.creator)
   creatorId: number;
-  @OneToMany(() => Comment, (comment) => comment.diary, { nullable: true })
+  @OneToMany(() => Comment, (comment) => comment.diary, {
+    nullable: true,
+  })
   @Field((type) => [Comment], { nullable: true })
   @IsArray()
   comments?: Comment[];

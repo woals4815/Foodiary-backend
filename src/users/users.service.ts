@@ -101,7 +101,7 @@ export class UsersService {
     }
   }
   async editProfile(
-    { email, name, password, confirmPassword }: EditProfileInput,
+    { email, name, password, confirmPassword, profilePic }: EditProfileInput,
     user: User,
   ): Promise<EditProfileOutput> {
     try {
@@ -124,6 +124,9 @@ export class UsersService {
       }
       if (name) {
         userExist.name = name;
+      }
+      if (profilePic) {
+        userExist.profilePic = profilePic;
       }
       await this.userRepository.save(userExist);
       return {

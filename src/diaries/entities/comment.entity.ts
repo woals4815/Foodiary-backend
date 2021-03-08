@@ -14,13 +14,13 @@ export class Comment extends CommonEntity {
   @IsString()
   comment: string;
 
-  @ManyToOne(() => Diary, (diary) => diary.comments)
+  @ManyToOne(() => Diary, (diary) => diary.comments, { onDelete: 'CASCADE' })
   @Field((type) => String)
   diary: Diary;
   @RelationId((comment: Comment) => comment.diary)
   diaryId: number;
 
-  @ManyToOne(() => User, (user) => user.commentsMade)
+  @ManyToOne(() => User, (user) => user.commentsMade, { onDelete: 'CASCADE' })
   @Field((type) => User)
   creator: User;
 

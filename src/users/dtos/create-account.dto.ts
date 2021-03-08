@@ -8,9 +8,9 @@ export class CreateAccountInput extends PickType(User, [
   'email',
   'password',
   'name',
+  'profilePic',
 ]) {
   @Field((type) => String)
-  @Column()
   confirmPassword: string;
 }
 
