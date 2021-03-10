@@ -30,7 +30,6 @@ export class User extends CommonEntity {
   myDiaries: Diary[];
   @Column({ nullable: true })
   @Field((type) => String, { nullable: true })
-  @IsString()
   profilePic?: string;
   @OneToMany(() => Comment, (comment) => comment.creator)
   @Field((type) => [Comment])

@@ -37,6 +37,16 @@ export class DiariesService {
   async getAllDiaries(): Promise<getAllDiariesOutput> {
     try {
       const diaries = await this.diaryRepository.find({ publicOrNot: true });
+      if (diaries) {
+        return {
+          ok: true,
+          diaries,
+        };
+      }
+      return {
+        ok: false,
+        error: 'No diaries yet.',
+      };
     } catch (error) {
       console.log(error);
       return {

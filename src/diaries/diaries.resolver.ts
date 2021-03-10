@@ -32,7 +32,6 @@ import { Diary } from './entities/diaries.entity';
 export class DiariesResolver {
   constructor(private readonly diariesService: DiariesService) {}
   @Query((returns) => getAllDiariesOutput)
-  @Role(['User'])
   async getAllDiaries(): Promise<getAllDiariesOutput> {
     return this.diariesService.getAllDiaries();
   }

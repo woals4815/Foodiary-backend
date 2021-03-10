@@ -23,7 +23,7 @@ export class Diary extends CommonEntity {
   @Column({ default: false })
   @Field((type) => Boolean, { defaultValue: false })
   publicOrNot: boolean;
-  @ManyToOne(() => User, (user) => user.myDiaries)
+  @ManyToOne(() => User, (user) => user.myDiaries, { eager: true })
   @Field((type) => User)
   creator: User;
   @RelationId((diary: Diary) => diary.creator)
