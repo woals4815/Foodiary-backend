@@ -66,6 +66,12 @@ import { Comment } from './diaries/entities/comment.entity';
         process.env.NODE_ENV !== 'production' &&
         process.env.NODE_ENV !== 'test',
       entities: [User, Restaurant, Diary, Comment],
+      extra: {
+        ssl: {
+          rejectUnauthorized: false,
+        },
+      },
+      ssl: true,
     }),
     RestaurantsModule,
     UsersModule,
