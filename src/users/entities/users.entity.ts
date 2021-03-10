@@ -15,18 +15,17 @@ export class User extends CommonEntity {
   @Field((type) => String)
   @IsString()
   name: string;
-  @Column()
+  @Column({ unique: true })
   @Field((type) => String)
   @IsEmail()
   email: string;
-  @Column()
+  @Column({ select: false })
   @Field((type) => String)
   @MinLength(10)
   @IsString()
   password: string;
   @OneToMany(() => Diary, (diary) => diary.creator)
   @Field((type) => [Diary])
-  @IsArray()
   myDiaries: Diary[];
   @Column({ nullable: true })
   @Field((type) => String, { nullable: true })
