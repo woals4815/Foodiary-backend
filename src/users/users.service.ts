@@ -65,7 +65,7 @@ export class UsersService {
       console.log(error);
       return {
         ok: false,
-        error: 'Cannot create the account.',
+        error,
       };
     }
   }
