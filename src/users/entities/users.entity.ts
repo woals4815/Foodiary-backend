@@ -11,7 +11,7 @@ import { Comment } from 'src/diaries/entities/comment.entity';
 @ObjectType()
 @Entity()
 export class User extends CommonEntity {
-  @Column()
+  @Column({ unique: true })
   @Field((type) => String)
   @IsString()
   name: string;
