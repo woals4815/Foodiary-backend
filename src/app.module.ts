@@ -47,6 +47,8 @@ import { Comment } from './diaries/entities/comment.entity';
           token: req ? req.headers[TOKEN_KEY] : connection.context[TOKEN_KEY],
         };
       },
+      introspection: true,
+      playground: true,
     }),
     TypeOrmModule.forRoot({
       type: 'postgres',
