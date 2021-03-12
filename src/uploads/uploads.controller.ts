@@ -24,6 +24,7 @@ export class UploadsController {
     try {
       const urls = [];
       files.map((file) => {
+        console.log(file);
         const objectName = `${Date.now() + file.originalname}`;
         new AWS.S3()
           .putObject({
