@@ -15,6 +15,7 @@ export class UploadsController {
   @Post('')
   @UseInterceptors(FilesInterceptor('file'))
   async uploadFile(@UploadedFiles() files: Express.Multer.File[]) {
+    console.log(files, "hiiiii");
     AWS.config.update({
       credentials: {
         accessKeyId: process.env.AWS_ACCESS_KEY,
@@ -24,7 +25,6 @@ export class UploadsController {
     try {
       const urls = [];
       files.map((file) => {
-        console.log(file);
         const objectName = `${Date.now() + file.originalname}`;
         new AWS.S3()
           .putObject({
