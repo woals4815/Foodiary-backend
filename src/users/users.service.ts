@@ -2,13 +2,14 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CommonOutput } from 'src/common/dtos/common.dto';
 import { JwtService } from 'src/jwt/jwt.service';
-import { Repository } from 'typeorm';
+import { Raw, Repository } from 'typeorm';
 import {
   CreateAccountInput,
   CreateAccountOutput,
 } from './dtos/create-account.dto';
 import { EditProfileInput, EditProfileOutput } from './dtos/edit-profile.dto';
 import { LoginIntput, LoginOutput } from './dtos/login-dto';
+import { SearchUserInput, SearchUserOutput } from './dtos/search-user.dto';
 import { UserProfileInput, UserProfileOutput } from './dtos/user-profile.dto';
 import { User } from './entities/users.entity';
 
@@ -42,10 +43,19 @@ export class UsersService {
       const userExist = await this.userRepository.findOne({
         email: createAccountInput.email,
       });
+      const userExistTwo = await this.userRepository.findOne({
+        name: createAccountInput.name,
+      });
       if (userExist) {
         return {
           ok: false,
-          error: 'User already exists.',
+          error: 'The Email already exists.',
+        };
+      }
+      if (userExistTwo) {
+        return {
+          ok: false,
+          error: 'The name already exists.',
         };
       }
       const passwordConfirm = this.verifyPassword(
@@ -158,6 +168,34 @@ export class UsersService {
       return {
         ok: false,
         error: 'Cannot find the user.',
+      };
+    }
+  }
+  async searchUser(
+    searchUserInput: SearchUserInput,
+  ): Promise<SearchUserOutput> {
+    try {
+      const { query } = searchUserInput;
+      const users = await this.userRepository.find({
+        where: {
+          name: Raw((name) => `${name} ILIKE '%${query}%'`),
+        },
+      });
+      if (!users) {
+        return {
+          ok: false,
+          error: 'No Results.',
+        };
+      }
+      return {
+        ok: true,
+        users,
+      };
+    } catch (error) {
+      console.log(error);
+      return {
+        ok: false,
+        error: 'No Results.',
       };
     }
   }

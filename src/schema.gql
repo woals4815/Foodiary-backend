@@ -188,6 +188,7 @@ type Query {
   getMyOneDiary(input: GetOneDiaryInput!): GetOneDiaryOutput!
   getOneComment(input: GetOneCommentInput!): GetOneCommentOutput!
   getOneDiary(input: GetOneDiaryInput!): GetOneDiaryOutput!
+  searchUser(input: SearchUserInput!): SearchUserOutput!
   userProfile(userId: Float!): UserProfileOutput!
 }
 
@@ -199,6 +200,16 @@ type Restaurant {
   name: String!
   rating: Float!
   updatedAt: DateTime!
+}
+
+input SearchUserInput {
+  query: String!
+}
+
+type SearchUserOutput {
+  error: String
+  ok: Boolean!
+  users: [User!]
 }
 
 type User {

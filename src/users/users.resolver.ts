@@ -7,6 +7,7 @@ import {
 } from './dtos/create-account.dto';
 import { EditProfileInput, EditProfileOutput } from './dtos/edit-profile.dto';
 import { LoginIntput, LoginOutput } from './dtos/login-dto';
+import { SearchUserInput, SearchUserOutput } from './dtos/search-user.dto';
 import { UserProfileInput, UserProfileOutput } from './dtos/user-profile.dto';
 import { User } from './entities/users.entity';
 import { UsersService } from './users.service';
@@ -42,5 +43,12 @@ export class UsersResolver {
   @Role(['User'])
   getMe(@AuthUser() user: User) {
     return user;
+  }
+  @Query((returns) => SearchUserOutput)
+  @Role(['User'])
+  async searchUser(
+    @Args('input') searchUserInput: SearchUserInput,
+  ): Promise<SearchUserOutput> {
+    return this.usersService.searchUser(searchUserInput);
   }
 }
