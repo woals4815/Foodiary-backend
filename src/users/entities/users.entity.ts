@@ -30,9 +30,9 @@ export class User extends CommonEntity {
   @Column({ nullable: true })
   @Field((type) => String, { nullable: true })
   profilePic?: string;
-  @OneToMany(() => Comment, (comment) => comment.creator)
+  @OneToMany(() => Comment, (comment) => comment.creator, { nullable: true })
   @Field((type) => [Comment])
-  commentsMade: Comment[];
+  commentsMade?: Comment[];
 
   @BeforeInsert()
   @BeforeUpdate()
