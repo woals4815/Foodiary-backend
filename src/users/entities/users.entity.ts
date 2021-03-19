@@ -24,9 +24,9 @@ export class User extends CommonEntity {
   @MinLength(10)
   @IsString()
   password: string;
-  @OneToMany(() => Diary, (diary) => diary.creator)
+  @OneToMany(() => Diary, (diary) => diary.creator, { nullable: true })
   @Field((type) => [Diary])
-  myDiaries: Diary[];
+  myDiaries?: Diary[];
   @Column({ nullable: true })
   @Field((type) => String, { nullable: true })
   profilePic?: string;

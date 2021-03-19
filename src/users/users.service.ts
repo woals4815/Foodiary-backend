@@ -152,7 +152,9 @@ export class UsersService {
   }
   async findById({ userId }: UserProfileInput): Promise<UserProfileOutput> {
     try {
-      const user = await this.userRepository.findOneOrFail(userId);
+      const user = await this.userRepository.findOneOrFail(userId, {
+        relations: ['myDiaries', 'commentsMade'],
+      });
       if (!user) {
         return {
           ok: false,
