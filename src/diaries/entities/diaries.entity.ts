@@ -9,8 +9,8 @@ import { Comment } from './comment.entity';
 @ObjectType()
 @Entity()
 export class Diary extends CommonEntity {
-  @Column('text', { nullable: true, array: true })
-  @Field((type) => [String], { nullable: true })
+  @Column('text', { array: true })
+  @Field((type) => [String])
   images?: string[];
   @Column({ nullable: true })
   @Field((type) => String, { nullable: true })
