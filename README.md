@@ -3,3 +3,5 @@
 - Database: PostgreSQL
 - ORM: TypeORM
 - GraphQL
+- AWS S3: for images uploaded by users
+- Deployment: Heroku
