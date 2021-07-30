@@ -5,3 +5,4 @@
 - GraphQL
 - AWS S3: for images uploaded by users
 - Deployment: Heroku
+- User Authentication: JWT Token
